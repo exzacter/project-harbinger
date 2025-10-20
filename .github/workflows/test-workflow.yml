@@ -1,10 +1,20 @@
-steps:
-  - name: test work status
-    run: |
-      echo: "This is a pipeline that is run manually"
+name: test workflow
+
+on: 
+  workflow_dispatch
+
+jobs: 
+  check-status:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: test work status
+        run: |
+          echo "This is a pipeline that is run manually"
 
 
-  - name: Confirm run status
-    run: |
-      echo: "Workflow triggered succesfully"
-      date
+      - name: Confirm run status
+        run: |
+          echo "Workflow triggered succesfully"
+          date
