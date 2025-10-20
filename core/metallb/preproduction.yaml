@@ -15,9 +15,13 @@ addressPools:
 # Optional: Additional Preproduction-specific settings
 prometheus:
   podMonitor:
-    enabled: true
+    enabled: false 
   serviceMonitor:
-    enabled: true
+    enabled: false
+    # serviceAccount: prometheus
+    # namespace: monitoring
+  prometheusRule:
+    enabled: false
 
 # Resource allocations for preproduction
 controller:
