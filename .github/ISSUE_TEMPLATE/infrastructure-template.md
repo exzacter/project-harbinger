@@ -21,15 +21,8 @@ assignees: ''
 - [ ] Prepare preproduction deployment
 - [ ] Prepare production deployment
 
-### Verification
-- [ ] Deploy to preproduction cluster
-- [ ] Verify basic functionality
-- [ ] Test connectivity
-- [ ] Validate initial setup
-
-### Next Steps
-- [ ] Document configuration details
-- [ ] Prepare for production deployment
-
 ## Notes
 - Specific implementation details for [COMPONENT]
+
+## Additional information
+- Anything else that is necessary to know?
