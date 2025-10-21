@@ -1,0 +1,18 @@
+name: test PR workflow
+
+on: 
+  pull_request:
+    branches:
+      - '*'
+
+jobs: 
+  pr-summoned:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: summoning 
+        run: |
+          echo "A pul request has been created"
+          echo "Branch: ${{github.head_ref}}"
+          echo "Repo: ${{github.repository}}"
