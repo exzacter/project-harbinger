@@ -1,0 +1,69 @@
+controller:
+  tcp:
+    annotations:
+      usage: tcp-configmap
+
+service:
+  enabled: true
+  external:
+    enabled: true
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "10.10.10.100" 
+    metallb.universe.tf/allow-shared-ip: "ingress-nginx"
+
+  labels: {}
+  type: LoadBalancer
+  clusterIP: ""
+  clusterIPs: []
+  externalIPs: []
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  loadBalancerClass: ""
+  externalTrafficPolicy: ""
+  sessionAffinity: ""
+  ipFamilyPolicy: SingleStack
+  ipFamilies:
+    - IPv4
+  enableHttp: true
+  enablehttps: true
+  ports:
+    http: 80
+    https: 443
+  targetPorts:
+    http: http
+    https: https
+  appProtocl: true
+  nodePorts:
+    http: ""
+    https: ""
+    tcp: {}
+    udp: {}
+  internal:
+    enabled: false
+    annotations: {}
+    type: ""
+    clusterIP: ""
+    clusterIPs: []
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    loadBalancerClass: ""
+    externalTrafficPolicy: ""
+    sessionAffinity: ""
+    ipFamilyPolicy: SingleStack
+    ipFamilies:
+      - IPv4
+    enableHttp: true
+    enablehttps: true
+    ports:
+      http: 80
+      https: 443
+    targetPorts:
+      http: http
+      https: https
+    appProtocl: true
+    nodePorts:
+      http: ""
+      https: ""
+      tcp: {}
+      udp: {}
