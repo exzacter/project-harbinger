@@ -1,0 +1,8 @@
+ServiceAccount:
+  create: true
+  name: "cert-manager"
+  annotations:
+    environment: "productions"
+    cluster: "k8s-production"
+  automountServiceAccountToken: true
+
