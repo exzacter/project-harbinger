@@ -1,6 +1,17 @@
-# Pre-production configuration
+# Helm values for pre-production - NO ArgoCD metadata here!
 
 components:
   frontendProxy:
     service:
       type: LoadBalancer
+      annotations:
+        environment: "pre-production"
+        cluster: "k8s-preproduction"
+  loadgenerator:
+    env:
+      - name: LOCUST_USERS
+        value: "5"
+      - name: LOCUST_SPAWN_RATE
+        value: "1"
+      - name: LOCUST_RUN_TIME
+        value: "24h"
