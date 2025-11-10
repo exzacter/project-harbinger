@@ -1,4 +1,5 @@
-# Helm values for pre-production environment
+# Helm values for pre-production - NO ArgoCD metadata here!
+
 components:
   frontendProxy:
     service:
@@ -22,8 +23,3 @@ components:
         value: "1"
       - name: LOCUST_RUN_TIME
         value: "24h"
-
-default:
-  resources:
-    limits:
-      memory: 1.5Gi
