@@ -116,12 +116,6 @@ components:
       limits:
         memory: 20Mi
 
-  fraudDetectionService:
-    enabled: true
-    resources:
-      limits:
-        memory: 200Mi
-
   imageprovider:
     enabled: true
     resources:
