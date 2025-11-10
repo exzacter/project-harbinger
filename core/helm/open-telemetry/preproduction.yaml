@@ -1,14 +1,4 @@
-# ArgoCD Application metadata
-repo: https://open-telemetry.github.io/opentelemetry-helm-charts
-chart: opentelemetry-demo
-version: 0.32.8
-namespace: otel-demo
-
-# Environment-specific configuration for pre-production
-observability:
-  otelcol:
-    enabled: true
-
+# Helm values for pre-production environment
 components:
   frontendProxy:
     service:
@@ -24,8 +14,7 @@ components:
       - name: OTEL_SERVICE_NAME
         value: "frontend-preprod"
 
-  loadGenerator:
-    # Reduce load in pre-production
+  loadgenerator:
     env:
       - name: LOCUST_USERS
         value: "5"
@@ -34,7 +23,6 @@ components:
       - name: LOCUST_RUN_TIME
         value: "24h"
 
-# Pre-production specific resource adjustments
 default:
   resources:
     limits:
