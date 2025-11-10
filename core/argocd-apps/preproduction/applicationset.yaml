@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: openTelemetry 
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - matrix:
+      generators:
+      - list:
+          elements:
+          - cluster:
+              url: 'https://kubernetes.default.svc'
+              environment: preproduction 
+      - list:
+          elements:
+            - appName: open-telemetry
+              namespace: open-telemetry
+              revision: 0.32.8
+              repoURL: 'https://open-telemetry.github.io/opentelemetry-helm-charts'
+              chart: opentelemetry-demo
+  template:
+    metadata:
+      name: '{{.appName}}-{{.cluster.environment}}'
+      namespace: argocd
+    spec:
+      project: openTelemetry 
+      sources:
+      - repoURL: '{{.repoURL}}'
+        chart: '{{.chart}}'
+        targetRevision: '{{.revision}}'
+        helm:
+          releaseName: '{{.appName}}'
+          valueFiles:
+          - $values/core/helm/{{.appName}}/common.yaml
+          - $values/core/helm/{{.appName}}/{{.cluster.environment}}.yaml
+      - repoURL: https://github.com/exzacter/project-harbinger.git
+        targetRevision: main
+        ref: values
+      destination:
+        server: '{{.cluster.url}}' 
+        namespace: '{{.namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - validate=true
+```
+
+## Key Changes:
+
+1. ✅ Added `goTemplate: true` at the spec level
+2. ✅ Added `template:` section wrapping metadata/spec/syncPolicy
+3. ✅ Fixed variable references with dot notation:
+   - `{{appName}}` → `{{.appName}}`
+   - `{{environment}}` → `{{.cluster.environment}}`
+   - `{{url}}` → `{{.cluster.url}}`
+   - `{{namespace}}` → `{{.namespace}}`
+4. ✅ Changed application name to `{{.appName}}-{{.cluster.environment}}` to be unique
+5. ✅ Changed namespace from `test-argocd` to `argocd` (standard practice)
+6. ✅ Moved `syncPolicy` inside `spec:`
+
+## Expected File Structure:
+```
+project-harbinger/
+└── core/
+    └── helm/
+        └── open-telemetry/
+            ├── common.yaml
+            └── preproduction.yaml
