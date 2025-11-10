@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: openTelemetry 
-  namespace: argocd
+  name: podinfo 
+  namespace: test-argocd
 spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
@@ -16,17 +16,17 @@ spec:
               environment: preproduction 
       - list:
           elements:
-            - appName: open-telemetry
-              namespace: open-telemetry
-              revision: 0.32.8
-              repoURL: 'https://open-telemetry.github.io/opentelemetry-helm-charts'
-              chart: opentelemetry-demo
+          - appName: podinfo
+            namespace: podinfo-test
+            revision: 6.5.4
+            repoURL: 'https://stefanprodan.github.io/podinfo'
+            chart: podinfo
   template:
     metadata:
       name: '{{.appName}}-{{.cluster.environment}}'
       namespace: argocd
     spec:
-      project: openTelemetry 
+      project: opentelemetry 
       sources:
       - repoURL: '{{.repoURL}}'
         chart: '{{.chart}}'

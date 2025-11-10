@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: podinfo 
+  namespace: test-argocd
+spec:
+  description: OpenTelemetry Demo Project
+  
+  sourceRepos:
+  - 'https://ghcr.io/stefanprodan/podinfo'
+  - 'https://github.com/exzacter/project-harbinger.git'
+  
+  destinations:
+  - namespace: 'podinfo'
+    server: 'https://kubernetes.default.svc'
+  
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'

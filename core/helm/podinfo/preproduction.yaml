@@ -1,0 +1,11 @@
+# Pre-production podinfo config
+
+service:
+  type: LoadBalancer
+  annotations:
+    environment: "pre-production"
+    cluster: "k8s-preproduction"
+
+ui:
+  message: "Welcome to Pre-Production!"
+  color: "#34577c"

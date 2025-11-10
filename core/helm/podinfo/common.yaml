@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/stefanprodan/podinfo
+  tag: 6.5.4
+  pullPolicy: IfNotPresent
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 9898
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 64Mi
+  requests:
+    cpu: 50m
+    memory: 32Mi
