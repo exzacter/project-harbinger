@@ -4,9 +4,10 @@ metadata:
   name: podinfo 
   namespace: test-argocd
 spec:
-  description:    
+  description: Podinfo application project
   sourceRepos:
   - 'https://github.com/exzacter/project-harbinger.git'
+  - 'https://stefanprodan.github.io/podinfo'
   
   destinations:
   - namespace: 'podinfo'

@@ -18,21 +18,27 @@ spec:
           elements:
           - appName: podinfo
             namespace: podinfo
+            revision: 6.5.4
+            repoURL: 'https://stefanprodan.github.io/podinfo'
+            chart: podinfo
   template:
     metadata:
       name: '{{.appName}}-{{.cluster.environment}}'
       namespace: argocd
     spec:
       project: podinfo 
-      source:
-        repoURL: 'https://github.com/exzacter/project-harbinger.git'
-        targetRevision: main
-        path: 'core/helm/{{.appName}}'
+      sources:
+      - repoURL: '{{.repoURL}}'
+        chart: '{{.chart}}'
+        targetRevision: '{{.revision}}'
         helm:
           releaseName: '{{.appName}}'
           valueFiles:
-          - common.yaml
-          - '{{.cluster.environment}}.yaml'
+          - $values/core/helm/{{.appName}}/common.yaml
+          - $values/core/helm/{{.appName}}/{{.cluster.environment}}.yaml
+      - repoURL: https://github.com/exzacter/project-harbinger.git
+        targetRevision: main
+        ref: values
       destination:
         server: '{{.cluster.url}}' 
         namespace: '{{.namespace}}'
