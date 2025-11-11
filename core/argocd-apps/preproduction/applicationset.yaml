@@ -17,28 +17,22 @@ spec:
       - list:
           elements:
           - appName: podinfo
-            namespace: podinfo-test
-            revision: 6.5.4
-            repoURL: 'https://stefanprodan.github.io/podinfo'
-            chart: podinfo
+            namespace: podinfo
   template:
     metadata:
       name: '{{.appName}}-{{.cluster.environment}}'
       namespace: argocd
     spec:
-      project: opentelemetry 
-      sources:
-      - repoURL: '{{.repoURL}}'
-        chart: '{{.chart}}'
-        targetRevision: '{{.revision}}'
+      project: podinfo 
+      source:
+        repoURL: 'https://github.com/exzacter/project-harbinger.git'
+        targetRevision: main
+        path: 'core/helm/{{.appName}}'
         helm:
           releaseName: '{{.appName}}'
           valueFiles:
-          - $values/core/helm/{{.appName}}/common.yaml
-          - $values/core/helm/{{.appName}}/{{.cluster.environment}}.yaml
-      - repoURL: https://github.com/exzacter/project-harbinger.git
-        targetRevision: main
-        ref: values
+          - common.yaml
+          - '{{.cluster.environment}}.yaml'
       destination:
         server: '{{.cluster.url}}' 
         namespace: '{{.namespace}}'

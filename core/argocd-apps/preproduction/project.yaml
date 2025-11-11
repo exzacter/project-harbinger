@@ -4,10 +4,8 @@ metadata:
   name: podinfo 
   namespace: test-argocd
 spec:
-  description: OpenTelemetry Demo Project
-  
+  description:    
   sourceRepos:
-  - 'https://ghcr.io/stefanprodan/podinfo'
   - 'https://github.com/exzacter/project-harbinger.git'
   
   destinations:
