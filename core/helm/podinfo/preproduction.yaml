@@ -7,3 +7,15 @@ service:
 ui:
   message: "Welcome to Pre-Production!"
   color: "#34577c"
+
+  # If podinfo chart supports pod annotations
+podAnnotations:
+  argocd.argoproj.io/compare-options: IgnoreExtraneous
+  argocd.argoproj.io/sync-options: Prune=false
+
+# For Jobs specifically
+jobs:
+  annotations:
+    argocd.argoproj.io/hook: Skip
+    # OR if you have the newer ArgoCD version with the PR merged:
+    argocd.argoproj.io/ignore-restart-policy: "true"
