@@ -90,6 +90,8 @@ kind: Ingress
 metadata:
   name: kite
   namespace: kite
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
   ingressClassName: nginx
   rules:

@@ -1,7 +1,15 @@
-ServiceAccount:
+serviceAccount:
   create: true
   name: "cert-manager"
   annotations:
     environment: "pre-production"
     cluster: "k8s-preproduction"
   automountServiceAccountToken: true
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi

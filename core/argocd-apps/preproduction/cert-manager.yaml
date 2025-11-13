@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: test-argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.16.2
+      helm:
+        valueFiles:
+          - $values/core/helm/cert-manager/common.yaml
+          - $values/core/helm/cert-manager/preproduction.yaml
+    - repoURL: https://github.com/exzacter/project-harbinger.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: https://github.com/exzacter/project-harbinger.git
+      targetRevision: HEAD
+      path: core/helm/cert-manager
+      directory:
+        include: '{clusterissuer-preprod.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
