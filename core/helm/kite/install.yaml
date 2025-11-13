@@ -94,6 +94,10 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - kite.projectharbinger.xyz
+    secretName: kite-tls
   rules:
     - host: kite.projectharbinger.xyz
       http:
