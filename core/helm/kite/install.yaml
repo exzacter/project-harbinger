@@ -91,7 +91,7 @@ metadata:
   name: kite
   namespace: kite
 spec:
-  ingressClassName: nginx-ingress
+  ingressClassName: nginx
   rules:
     - host: kite.projectharbinger.xyz
       http:
