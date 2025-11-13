@@ -2,7 +2,7 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: preproduction-ip-pool
-  namespace: metallb-system
+  namespace: loadbalancer 
 spec:
   addresses:
   - 10.19.0.50-10.19.0.250
