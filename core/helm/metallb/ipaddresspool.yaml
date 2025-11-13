@@ -5,4 +5,4 @@ metadata:
   namespace: loadbalancer 
 spec:
   addresses:
-  - 10.19.0.50-10.19.0.250
+  - 10.0.10.50-10.0.10.250

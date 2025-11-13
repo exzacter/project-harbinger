@@ -8,7 +8,6 @@ service:
   external:
     enabled: true
   annotations:
-    metallb.universe.tf/loadBalancerIPs: "10.10.10.100" 
     metallb.universe.tf/allow-shared-ip: "ingress-nginx"
 
   labels: {}

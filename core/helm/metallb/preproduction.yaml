@@ -1,18 +1,4 @@
-# IP Pool Configuration for Preproduction
-controller:
-  logLevel: debug
-
-speaker:
-  logLevel: debug
-
 # Define IP Address Pool for Preproduction
-addressPools:
-  - name: preproduction-ip-pool 
-    protocol: layer2
-    addresses:
-    - 10.10.10.0/24  # Adjust this to your preproduction network range
-
-# Optional: Additional Preproduction-specific settings
 prometheus:
   podMonitor:
     enabled: false 
@@ -23,8 +9,8 @@ prometheus:
   prometheusRule:
     enabled: false
 
-# Resource allocations for preproduction
 controller:
+  logLevel: debug
   resources:
     requests:
       cpu: 100m
@@ -34,6 +20,7 @@ controller:
       memory: 200Mi
 
 speaker:
+  logLevel: debug
   resources:
     requests:
       cpu: 100m
