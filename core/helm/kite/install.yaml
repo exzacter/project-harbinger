@@ -111,13 +111,6 @@ spec:
                   number: 8080
 ---
 apiVersion: gateway.networking.k8s.io/v1
-kind: GatewayClass
-metadata:
-  name: eg
-spec:
-  controllerName: gateway.envoyproxy.io/gatewayclass-controller
----
-apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: kite-gateway
@@ -131,6 +124,17 @@ spec:
     allowedRoutes:
       namespaces:
         from: Same
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: kite.projectharbinger.xyz
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: kite-tls  # Your existing cert-manager certificate
+    allowedRoutes:
+      namespaces:
+        from: Same
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -140,6 +144,7 @@ metadata:
 spec:
   parentRefs:
   - name: kite-gateway
+    sectionName: https  # Route to HTTPS listener
   hostnames:
   - "kite.projectharbinger.xyz"
   rules:
