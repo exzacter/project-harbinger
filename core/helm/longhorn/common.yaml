@@ -4,6 +4,12 @@ kind: Namespace
 metadata:
   name: longhorn
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: longhorn-service-account
+  namespace: longhorn
+---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
