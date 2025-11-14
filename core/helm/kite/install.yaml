@@ -1,7 +1,14 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
-    name: kite
+  name: kite
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kite
+  namespace: kite
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -12,29 +19,22 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
 subjects:
-  - kind: ServiceAccount
-    name: kite
-    namespace: kite 
----
-kind: ServiceAccount
-apiVersion: v1
-metadata:
+- kind: ServiceAccount
   name: kite
   namespace: kite
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: kite
   name: kite
   namespace: kite
+  labels:
+    app: kite
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: kite
-  strategy: {}
   template:
     metadata:
       labels:
@@ -42,70 +42,122 @@ spec:
     spec:
       serviceAccountName: kite
       containers:
-        - image: ghcr.io/zxh326/kite:latest
-          imagePullPolicy: IfNotPresent
-          name: kite
-          resources:
-            limits:
-              cpu: 1000m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          ports:
-            - containerPort: 8080
-              protocol: TCP
+      - name: kite
+        image: ghcr.io/zxh326/kite:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  name: kite
+  namespace: kite
   labels:
     app: kite
-  name: kite
-  namespace: kite
 spec:
+  type: ClusterIP
   ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
   selector:
     app: kite
-  type: ClusterIP
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  name: kite
+  name: kite-tls
   namespace: kite
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-staging-dns"
 spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - kite.projectharbinger.xyz
-    secretName: kite-tls
+  secretName: kite-tls
+  issuerRef:
+    name: letsencrypt-staging-dns
+    kind: ClusterIssuer
+  dnsNames:
+  - kite.projectharbinger.xyz
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: kite-gateway
+  namespace: kite
+spec:
+  gatewayClassName: eg
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: kite.projectharbinger.xyz
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: kite-tls
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kite-route-https
+  namespace: kite
+spec:
+  parentRefs:
+  - name: kite-gateway
+    sectionName: https
+  hostnames:
+  - "kite.projectharbinger.xyz"
   rules:
-    - host: kite.projectharbinger.xyz
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: kite
-                port:
-                  number: 8080
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: kite
+      port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kite-route-http-redirect
+  namespace: kite
+spec:
+  parentRefs:
+  - name: kite-gateway
+    sectionName: http
+  hostnames:
+  - "kite.projectharbinger.xyz"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
