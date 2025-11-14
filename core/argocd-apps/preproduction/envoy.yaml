@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: oci://docker.io/envoyproxy
+  - repoURL: oci://docker.io/envoyproxy/gateway-helm
     chart: gateway-helm
-    targetRevision: v1.4.0
+    targetRevision: v1.6.0
     helm:
       releaseName: envoy-gateway
       values: |
@@ -30,7 +30,7 @@ spec:
     targetRevision: HEAD
     path: core/helm/envoy
     directory:
-      include: '{common, preproduction}.yaml'
+      include: '{common,preproduction}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: envoy-gateway-system
