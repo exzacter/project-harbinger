@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn-pre
+  namespace: test-argocd
+spec:
+  project: default
+  sources:
+  - repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.7.2
+    helm:
+      releaseName: longhorn
+      values: |
+        persistence:
+          defaultClass: true
+          defaultClassReplicaCount: 2
+          reclaimPolicy: Retain
+        defaultSettings:
+          backupTarget: ""
+          backupTargetCredentialSecret: ""
+          defaultReplicaCount: 2
+          guaranteedInstanceManagerCpu: 12
+          createDefaultDiskLabeledNodes: true
+          defaultDataPath: /var/lib/longhorn/
+          replicaSoftAntiAffinity: false
+          storageOverProvisioningPercentage: 200
+          storageMinimalAvailablePercentage: 25
+          upgradeChecker: true
+          nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+        ingress:
+          enabled: false
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+  - repoURL: https://github.com/exzacter/project-harbinger.git
+    targetRevision: HEAD
+    path: core/helm/longhorn
+    directory:
+      include: '{common,preproduction}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
