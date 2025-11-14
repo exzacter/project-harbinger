@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kite
+  namespace: test-argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/exzacter/project-harbinger.git
+    targetRevision: HEAD
+    path: core/kite/ 
+    directory:
+      include: '{common, preproduction}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kite
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

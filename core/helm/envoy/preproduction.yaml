@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-tls
+  namespace: default
+spec:
+  secretName: wildcard-tls
+  issuerRef:
+    name: letsencrypt-staging-dns
+    kind: ClusterIssuer
+  dnsNames:
+  - "*.pre.projectharbinger.xyz"
+  - "pre.projectharbinger.xyz"
