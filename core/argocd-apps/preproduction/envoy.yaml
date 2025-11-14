@@ -1,42 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: envoy-pre
+  name: envoy-gateway-config
   namespace: test-argocd
 spec:
   project: default
-  sources:
-  - repoURL: oci://docker.io/envoyproxy/gateway-helm
-    chart: gateway-helm
-    targetRevision: v1.6.0
-    helm:
-      releaseName: envoy-gateway
-      values: |
-        deployment:
-          replicas: 1
-          envoyGateway:
-            resources:
-              limits:
-                cpu: 500m
-                memory: 512Mi
-              requests:
-                cpu: 100m
-                memory: 128Mi
-        config:
-          envoyGateway:
-            gateway:
-              controllerName: gateway.envoyproxy.io/gatewayclass-controller
-  - repoURL: https://github.com/exzacter/project-harbinger.git
+  source:
+    repoURL: https://github.com/exzacter/project-harbinger.git
     targetRevision: HEAD
     path: core/helm/envoy
     directory:
       include: '{common,preproduction}.yaml'
   destination:
     server: https://kubernetes.default.svc
-    namespace: envoy-gateway-system
+    namespace: default
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
